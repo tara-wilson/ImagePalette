@@ -122,15 +122,16 @@ internal class HexColor {
 
 	Formula defined http://www.w3.org/TR/2008/REC-WCAG20-20081211/#contrast-ratiodef
 	*/
-	internal static func calculateContrast(var foreground: Int64, background: Int64) -> CGFloat {
+	internal static func calculateContrast( foreground: Int64, background: Int64) -> CGFloat {
 		assert(self.alpha(background) == 255, "background can not be translucent")
 
-		if self.alpha(foreground) < 255 {
+        var newForeground = foreground
+		if self.alpha(newForeground) < 255 {
 			// If the foreground is translucent, composite the foreground over the background
-			foreground = self.compositeColors(foreground, background: background)
+			newForeground = self.compositeColors(newForeground, background: background)
 		}
 
-		let luminance1 = calculateLuminance(foreground) + 0.05
+		let luminance1 = calculateLuminance(newForeground) + 0.05
 		let luminance2 = calculateLuminance(background) + 0.05
 
 		// Now return the lighter luminance divided by the darker luminance
@@ -176,7 +177,7 @@ internal class HexColor {
 				maxAlpha = testAlpha
 			}
 
-			numIterations++
+			numIterations += 1
 		}
 
 		// Conservatively return the max of the range of possible alphas, which is known to pass.

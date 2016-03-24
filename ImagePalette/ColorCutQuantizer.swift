@@ -8,7 +8,6 @@
 
 import Foundation
 import UIKit
-import SwiftPriorityQueue
 
 private let COMPONENT_RED = -3
 private let COMPONENT_GREEN = -2
@@ -50,7 +49,7 @@ internal final class ColorCutQuantizer {
 		// First, lets pack the populations into a SparseIntArray so that they can be easily
 		// retrieved without knowing a color's index
 		self.colorPopulations = Dictionary(minimumCapacity: rawColorCount)
-		for (var i = 0; i < rawColors.count; i++) {
+		for i in (0..<rawColors.count) {
 			self.colorPopulations[rawColors[i]] = rawColorCounts[i]
 		}
 
@@ -62,7 +61,7 @@ internal final class ColorCutQuantizer {
 		for color in rawColors {
 			if !self.shouldIgnoreColor(color) {
 				self.colors.append(color)
-				validColorCount++
+				validColorCount += 1
 			}
 		}
 
@@ -147,13 +146,13 @@ internal final class ColorCutQuantizer {
 
 			case COMPONENT_GREEN:
 				// We need to do a RGB to GRB swap, or vice-versa
-				for var i = lowerIndex; i <= upperIndex; i++ {
+                for i in (lowerIndex..<upperIndex+1) {
 					let color = self.colors[i]
 					self.colors[i] = HexColor.fromRGB((color >> 8) & 0xFF, green: (color >> 16) & 0xFF, blue: color & 0xFF)
 				}
 			case COMPONENT_BLUE:
 				// We need to do a RGB to BGR swap, or vice-versa
-				for var i = lowerIndex; i <= upperIndex; i++ {
+				for i in (lowerIndex..<upperIndex+1) {
 					let color = self.colors[i]
 					self.colors[i] = HexColor.fromRGB(color & 0xFF, green: (color >> 8) & 0xFF, blue: (color >> 16) & 0xFF)
 				}
@@ -217,7 +216,7 @@ private class Vbox: Hashable {
 
 	private static var ordinal = 0
 
-	let hashValue = ++Vbox.ordinal
+	let hashValue = 1 + Vbox.ordinal
 
 	init(quantizer: ColorCutQuantizer, lowerIndex: Int, upperIndex: Int) {
 		self.quantizer = quantizer
@@ -251,7 +250,7 @@ private class Vbox: Hashable {
 		self.maxGreen = 0x0
 		self.maxBlue = 0x0
 
-		for var i = self.lowerIndex; i <= self.upperIndex; i++ {
+        for i in (lowerIndex..<upperIndex+1) {
 			let color = HexColor.toRGB(self.quantizer.colors[i])
 
 			self.maxRed = max(self.maxRed, color.red)
@@ -342,7 +341,7 @@ private class Vbox: Hashable {
 
 		let dimensionMidPoint = self.midPoint(longestDimension)
 
-		for var i = self.lowerIndex; i < self.upperIndex; i++  {
+		for i in (lowerIndex..<upperIndex) {
 			let color = self.quantizer.colors[i]
 
 			switch (longestDimension) {
@@ -369,7 +368,7 @@ private class Vbox: Hashable {
 		var blueSum = Int64(0)
 		var totalPopulation = Int64(0)
 
-		for var i = self.lowerIndex; i <= self.upperIndex; i++ {
+		for i in (lowerIndex..<upperIndex+1) {
 			let color = self.quantizer.colors[i]
 
 			if let colorPopulation = self.quantizer.colorPopulations[color] {

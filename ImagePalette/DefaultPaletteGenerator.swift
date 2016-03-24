@@ -145,8 +145,8 @@ internal class DefaultPaletteGenerator: PaletteGenerator {
 	private static func weightedMean(values: [CGFloat]) -> CGFloat {
 		var sum = CGFloat(0)
 		var sumWeight = CGFloat(0)
-		
-		for var i = 0; i < values.count; i += 2 {
+
+        for i in (0..<values.count) where i%2 == 0 {
 			let value = values[i]
 			let weight = values[i + 1]
 			
